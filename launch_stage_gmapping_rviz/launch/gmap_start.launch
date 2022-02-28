@@ -1,0 +1,29 @@
+<launch>
+
+<node pkg="gmapping" type="slam_gmapping" name="my_gmapping_node" output="screen" >
+  <remap from="scan" to="/base_scan" />
+  <param name="odom_frame" value="/odom" />
+  <param name="base_frame" value="/base_link" />
+  
+  <param name="xmin" value="0.0" />
+  <param name="ymin" value="0.0" />
+  <param name="xmax" value="50.0"/>
+  <param name="ymax" value="50.0"/>
+  
+  <param name="delta" value="0.1"/>
+  <param name="map_update_interval" value="0.1"/> 
+  <param name="particles" value="10"/>
+  <!--/-->
+</node>
+
+<!--node pkg="stage_ros" type="stageros" name="stageros_node" output="screen" args="/home/jf/catkin_ws/src/stage_worlds/stage_world_original/willow-erratic_mod.world" respawn="false">
+</node-->
+
+<node pkg="stage_ros" type="stageros" name="stageros_node" output="screen" args="/home/jf/catkin_ws/src/stage_worlds/stage_world_original/my-offic-erratic.world" respawn="false">
+</node>
+
+
+<node type="rviz" name="rviz" pkg="rviz" args="/home/jf/catkin_ws/src/gmapping_for_stage_pathplan/launch/stage_gmap.rviz" />
+
+</launch>
+

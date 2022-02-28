@@ -1,0 +1,6 @@
+image: /home/jf/catkin_ws/src/stage_worlds/stage_world_original/willow-full.pgm
+resolution: 0.1
+origin: [0.0, 0.0, 0.0]
+occupied_thresh: 0.95
+free_thresh: 0.1
+negate: 0
