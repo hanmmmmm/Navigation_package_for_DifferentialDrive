@@ -1,10 +1,9 @@
 
 #include "../include/local_planner/local_planner_node.h"
-// #include "../include/local_planner/path_data.h"
 
 #include "ros/ros.h"
 #include "tf/transform_listener.h"
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <algorithm>
 #include <atomic>
 #include <future>
@@ -37,8 +36,8 @@ scanListener::scanListener(const ros::NodeHandle nh_in)
 
     map_info_.frameID = "/base_link";
     map_info_.resolution = 0.1;
-    map_info_.meter_width = 4.0;
-    map_info_.meter_height = 4.0;
+    map_info_.meter_width = 2.0;
+    map_info_.meter_height = 2.0;
     map_info_.grid_width = map_info_.meter_width / map_info_.resolution;
     map_info_.grid_height = map_info_.meter_height / map_info_.resolution;
     map_info_.grid_map.resize( map_info_.grid_height * map_info_.grid_width );
@@ -46,9 +45,9 @@ scanListener::scanListener(const ros::NodeHandle nh_in)
     inflation_.inflate_radius = 3;
     build_inflate_sample(inflation_.inflate_sample, inflation_.inflate_radius);
 
-    path_plan_time_interval = 0.3;
+    path_plan_time_interval = 0.2;
 
-    path_plan_timeout_ms_ = 700;
+    path_plan_timeout_ms_ = 500;
 
     cout << "sub and pub" << endl;
 
@@ -247,37 +246,44 @@ void scanListener::path_plan( const ros::TimerEvent &event )
     if(global_path_.size() >1)
     {
         
-    for(auto point : global_path_)
-    {
-        float x_local = point.xy[0];
-        float y_local = point.xy[1];
-        float yaw_local = point.heading;
-        // cout << "path_plan :: getting points in global path: " << x_local << " " << y_local << " " << yaw_local << endl;
-
-        // std::cout << path_point_count << ": " << x_local << " "  << y_local << " " << yaw_local << std::endl;
-        path_point_count ++;
-            
-        if( -map_width_temp/2.0 <x_local && x_local < map_width_temp/2.0  && -map_height_temp/2.0 <y_local && y_local < map_height_temp/2.0  )
+        for(auto point : global_path_)
         {
-            local_goal_.x_meter = x_local + map_info_.meter_width/2;
-            local_goal_.y_meter = y_local + map_info_.meter_height/2;
+            float x_local = point.xy[0];
+            float y_local = point.xy[1];
+            float yaw_local = point.heading;
+            // cout << "path_plan :: getting points in global path: " << x_local << " " << y_local << " " << yaw_local << endl;
 
-            local_goal_.x_grid = local_goal_.x_meter / map_info_.resolution;
-            local_goal_.y_grid = local_goal_.y_meter / map_info_.resolution;
+            // std::cout << path_point_count << ": " << x_local << " "  << y_local << " " << yaw_local << std::endl;
+            path_point_count ++;
+                
+            if( -map_width_temp/2.0 <x_local && x_local < map_width_temp/2.0  && -map_height_temp/2.0 <y_local && y_local < map_height_temp/2.0  )
+            {
+                local_goal_.x_meter = x_local + map_info_.meter_width/2;
+                local_goal_.y_meter = y_local + map_info_.meter_height/2;
 
-            local_goal_.yaw_rad = yaw_local;
+                local_goal_.x_grid = local_goal_.x_meter / map_info_.resolution;
+                local_goal_.y_grid = local_goal_.y_meter / map_info_.resolution;
 
-            // cout << "path_plan :: valid points : " <<local_goal_.x_meter << " " << local_goal_.y_meter << " " << local_goal_.yaw_rad << endl;
+                local_goal_.yaw_rad = yaw_local;
+
+                // cout << "path_plan :: valid points : " <<local_goal_.x_meter << " " << local_goal_.y_meter << " " << local_goal_.yaw_rad << endl;
+            }
+            else
+            {
+                break;
+            }
+
+
         }
-
-
-    }
     }
 
     FLAG_atom_global_path_in_use.store(false);
 
-    if(global_path_.size() >1)
+    if( global_path_.size() <=1 )
     {
+        cout << "Localplanner::path_plan: Received invalid global path" << endl;
+        return;
+    }
         
 
     int startnode[2] = { map_info_.grid_width/2, map_info_.grid_height/2 };
@@ -323,11 +329,7 @@ void scanListener::path_plan( const ros::TimerEvent &event )
         cout << std::fixed << std::setprecision(3) << "path_plan :: path point: " << pose.pose.position.x << " " << pose.pose.position.y << " " << head << endl;
 
     }
-    local_path_puber_.publish(  g_path);
-
-
-    }
-    
+    local_path_puber_.publish(  g_path );
 }
 
 

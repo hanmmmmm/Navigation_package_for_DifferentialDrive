@@ -7,8 +7,8 @@
 #include <algorithm>
 #include <atomic>
 #include <deque>
-#include "path_data.h"
 
+#include "path_data.h"
 #include "../hybrid_a_star_module/hybrid_astar.h"
 
 #include "sensor_msgs/LaserScan.h"
