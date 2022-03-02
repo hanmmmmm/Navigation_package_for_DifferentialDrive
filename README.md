@@ -28,5 +28,17 @@ The green arrows are global path, and the red ones are local path.
 
 
 
+----
+### Working demo
+
+Several new goals are added while the robot is moving. The paths are updated to guide the robot. 
+
+
+<a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif">
+    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif" alt="local gif" title="local" width="750"/>
+</a>
+
+
+
 
 
