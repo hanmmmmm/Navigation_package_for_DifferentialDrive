@@ -4,12 +4,10 @@ This is my implementation of a complete 2D navigation package, including global 
 
 
 ----
-### Set global goal
-<a id="search" href="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing">
-    <img src="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing" alt="goal gif" title="set goal" width="800"/>
+### Global goal and Global path
+<a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif">
+    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif" alt="goal gif" title="set goal" width="800"/>
 </a>
-
-<!--img src="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing" alt="goal gif" title="set goal" width="700"/-->
 
 
 
