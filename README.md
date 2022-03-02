@@ -43,7 +43,7 @@ Several new goals are added while the robot is moving. The paths are updated to 
 ### RQT_graph
 
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif">
-    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif" alt="local gif" title="local" width="750"/>
+    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif" alt="local gif" title="local" width="950"/>
 </a>
 
 
