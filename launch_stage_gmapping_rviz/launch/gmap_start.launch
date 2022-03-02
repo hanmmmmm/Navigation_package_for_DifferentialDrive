@@ -7,10 +7,10 @@
   
   <param name="xmin" value="0.0" />
   <param name="ymin" value="0.0" />
-  <param name="xmax" value="50.0"/>
-  <param name="ymax" value="50.0"/>
+  <param name="xmax" value="30.0"/>
+  <param name="ymax" value="30.0"/>
   
-  <param name="delta" value="0.1"/>
+  <param name="delta" value="0.2"/>
   <param name="map_update_interval" value="0.1"/> 
   <param name="particles" value="10"/>
   <!--/-->
