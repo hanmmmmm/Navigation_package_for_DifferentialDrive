@@ -5,11 +5,24 @@ This is my implementation of a complete 2D navigation package, including global 
 
 ----
 ### Global goal and Global path
+
+The line of green arrows is the path, from current location to the goal location.
+
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif">
-    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif" alt="goal gif" title="set goal" width="800"/>
+    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif" alt="goal gif" title="set goal" width="750"/>
 </a>
 
 
+
+----
+### Local goal and Local path
+
+The green arrows are global path, and the red ones are local path.
+
+
+<a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_local_path.gif">
+    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_local_path.gif" alt="local gif" title="local" width="750"/>
+</a>
 
 
 
