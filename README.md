@@ -5,11 +5,11 @@ This is my implementation of a complete 2D navigation package, including global 
 
 ----
 ### Set global goal
-<!--a id="search" href="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing">
+<a id="search" href="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing">
     <img src="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing" alt="goal gif" title="set goal" width="800"/>
-</a-->
+</a>
 
-<img src="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing" alt="goal gif" title="set goal" width="700"/>
+<!--img src="https://drive.google.com/file/d/1Soc4JA2UyPsnYt0MG6O1eVyg_gF9u_bq/view?usp=sharing" alt="goal gif" title="set goal" width="700"/-->
 
 
 
