@@ -10,7 +10,19 @@ I developed the above 3 modules, corresponding to the folders:
 This folder contains the launch file for RVIZ, Gmapping, Stage_ros, Gazebo_ros:
 - /launch_stage_gmapping_rviz
 
-<br><br>
+<br>
+
+Required input messages:
+- nav_msgs/<b>OccupancyGrid</b>
+- nav_msgs/<b>Odometry</b>
+- sensor_msgs/<b>LaserScan</b>
+
+
+Output message:
+- /cmd_vel, geometry_msgs/<b>Twist</b>
+
+
+<br>
 
 Two simulators are used for demonstration purpose:
 
