@@ -11,7 +11,7 @@ Two simulators are used.
     - The turtlebot robot is a differential-drive robot with 2D lidar. It also has RGBD cameras though not used in this project. 
 
 
-For slam, I am using the standard Gmapping. 
+
 <br>
 
 <i>An overview of the Gazebo world: </i>
@@ -20,6 +20,9 @@ For slam, I am using the standard Gmapping.
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/gazebo_turtle.gif" alt="gazebo turtle" title="gazebo turtle" width="750"/>
 </a>
 
+<br>
+
+For slam, I am using the standard Gmapping. 
 
 <br>
 
