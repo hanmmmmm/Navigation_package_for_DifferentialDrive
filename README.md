@@ -12,11 +12,12 @@ This folder contains the launch file for RVIZ, Gmapping, Stage_ros, Gazebo_ros:
 
 
 Two simulators are used for demonstration purpose. 
-1 <a href="http://wiki.ros.org/stage/Tutorials/SimulatingOneRobot"> stage_ros </a>. 
+
+1.  <a href="http://wiki.ros.org/stage/Tutorials/SimulatingOneRobot"> stage_ros </a>. 
     - It uses a bmp image to build the world. I draw my map using this bitmap tool <a href="https://www.pixilart.com/"> <i>pixilart</i> </a> .
     - It creates a differential-drive robot with 2D lidar.
 
-2 Gazebo with <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/"> turtlebot </a> . 
+2.  Gazebo with <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/"> turtlebot </a> . 
     - The map is turtlebot_house.
     - The turtlebot robot is a differential-drive robot with 2D lidar. It also has RGBD cameras though not used in this project. 
 
