@@ -3,9 +3,13 @@ This is my implementation of a complete 2D navigation package, including global 
 
 Two simulators are used. 
 - The first is stage_ros. 
--- It uses a bmp image to build the world, and creates a differential-drive robot with 2D lidar.
+    - It uses a bmp image to build the world. I draw my map using this bitmap tool <a href="https://www.pixilart.com/"> <i>pixilart</i> </a> .
+    - It creates a differential-drive robot with 2D lidar.
 
-- The second is Gazebo with turtlebot. The map is turtlebot_house, and the robot is a differential-drive robot with 2D lidar.
+- The second is Gazebo with <a href="https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/"> turtlebot </a> . 
+    - The map is turtlebot_house.
+    - The turtlebot robot is a differential-drive robot with 2D lidar. It also has RGBD cameras though not used in this project. 
+
 
 For slam, I am using the standard Gmapping. 
 
