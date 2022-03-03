@@ -62,7 +62,8 @@ Place the needed folders in a ros workspace, e.g. ```catkin_ws/src/```, and run 
 ### To-Do
 - Add algos from random-tree family, and compare with the A* family here.
 - Add MPC Model-predictive-controller.
-- Add potential field method for path planning.
+<!-- - Add potential field method for path planning. -->
+- Add Reed-shepp curve feature. 
 
 
 ----
