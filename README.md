@@ -2,7 +2,7 @@
 This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller.
 
 
-ROS libraries:
+ROS libraries being used:
 - geometry_msgs/Twist.h
 - geometry_msgs/PoseStamped.h
 - tf/transform_listener.h
