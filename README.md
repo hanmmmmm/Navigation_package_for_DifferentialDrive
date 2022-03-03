@@ -2,14 +2,12 @@
 This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller.
 
 ### ROS messages being used:
-- geometry_msgs/Twist.h
-- geometry_msgs/PoseStamped.h
-- tf/transform_listener.h
-- sensor_msgs/LaserScan.h
-- nav_msgs/OccupancyGrid.h
-- nav_msgs/MapMetaData.h
-- nav_msgs/Odometry.h
-- nav_msgs/Path.h
+- geometry_msgs:  Twist, PoseStamped
+- sensor_msgs:  LaserScan
+- nav_msgs:  OccupancyGrid, MapMetaData, Odometry, Path 
+- tf/transform_listener
+
+
 
 ### C++ libraries used:
 - ros/ros.h
@@ -57,6 +55,7 @@ This example is using Hybrid-A* to find the local path. The local goal is the la
 
 Several new goals are added while the robot is moving. The paths are updated to guide the robot. 
 
+The controller module use <i>odometry</i> and local_path to generate the disired linear & angular velocity for the robot to follow the local_path. 
 
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif" alt="local gif" title="local" width="750"/>
