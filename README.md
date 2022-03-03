@@ -1,6 +1,15 @@
 # navigation_package_V1
 This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller.
 
+Two simulators are used. 
+- The first is stage_ros. It uses a bmp image to build the world, and creates a differential-drive robot with 2D lidar.
+
+- The second is Gazebo with turtlebot. The map is turtlebot_house, and the robot is a differential-drive robot with 2D lidar.
+
+For slam, I am using the standard Gmapping. 
+
+
+
 ### ROS messages being used:
 - geometry_msgs:  Twist, PoseStamped
 - sensor_msgs:  LaserScan
@@ -28,6 +37,8 @@ This example is using A* algorithm to find the path.
 Each path-finding takes <1~20 ms. The more obstacles between robot and goal, the longer time it takes to find the valid path.
 
 But this node is set to update the global path about 2~3 Hz even though it could do much faster, since global path doesn't need to be updated too frequently. 
+
+Here I am dragging the robot in Stage simulator by hand.
 
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif" alt="goal gif" title="set goal" width="750"/>
