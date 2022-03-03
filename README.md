@@ -2,7 +2,8 @@
 This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller.
 
 Two simulators are used. 
-- The first is stage_ros. It uses a bmp image to build the world, and creates a differential-drive robot with 2D lidar.
+- The first is stage_ros. 
+-- It uses a bmp image to build the world, and creates a differential-drive robot with 2D lidar.
 
 - The second is Gazebo with turtlebot. The map is turtlebot_house, and the robot is a differential-drive robot with 2D lidar.
 
@@ -66,7 +67,7 @@ This example is using Hybrid-A* to find the local path. The local goal is the la
 
 Several new goals are added while the robot is moving. The paths are updated to guide the robot. 
 
-The controller module use <i>odometry</i> and local_path to generate the disired linear & angular velocity for the robot to follow the local_path. 
+The controller module use <i>odometry</i> and <i>local_path</i> to generate the disired linear & angular velocity for the robot to follow the local_path. 
 
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif" alt="local gif" title="local" width="750"/>
@@ -78,7 +79,7 @@ The controller module use <i>odometry</i> and local_path to generate the disired
 
 This is the workflow within the system. 
 
-The nodes StageROS and GMapping are standard ROS packages. 
+The nodes <i>StageROS</i> and <i>GMapping</i> are standard ROS packages. 
 
 The rest 3 modules are developed by myself.
 
