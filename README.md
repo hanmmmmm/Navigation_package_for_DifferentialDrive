@@ -2,7 +2,16 @@
 
 This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller.
 
-Two simulators are used. 
+I developed the above 3 modules, corresponding to the folders: 
+- /global_planner
+- /local_planner
+- /stage_robot_controller
+
+This folder contains the launch file for RVIZ, Gmapping, Stage_ros, Gazebo_ros:
+- launch_stage_gmapping_rviz
+
+
+Two simulators are used for demonstration purpose. 
 - The first is <a href="http://wiki.ros.org/stage/Tutorials/SimulatingOneRobot"> stage_ros </a>. 
     - It uses a bmp image to build the world. I draw my map using this bitmap tool <a href="https://www.pixilart.com/"> <i>pixilart</i> </a> .
     - It creates a differential-drive robot with 2D lidar.
@@ -24,7 +33,7 @@ Two simulators are used.
 <br>
 <br>
 
-For slam, I am using the standard Gmapping. 
+For slam, I am using the standard Gmapping for demonstration. 
 
 
 ### ROS messages being used:
