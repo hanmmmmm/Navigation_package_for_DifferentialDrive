@@ -14,12 +14,14 @@ Two simulators are used.
 For slam, I am using the standard Gmapping. 
 <br>
 
-
+<i>An overview of the Gazebo world</i>
 <a id="turtle" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/gazebo_turtle.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/gazebo_turtle.gif" alt="gazebo turtle" title="gazebo turtle" width="750"/>
 </a>
 
+
 <br>
+
 
 ### ROS messages being used:
 - geometry_msgs:  Twist, PoseStamped
