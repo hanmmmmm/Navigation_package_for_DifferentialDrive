@@ -8,7 +8,7 @@ I developed the above 3 modules, corresponding to the folders:
 - /stage_robot_controller
 
 This folder contains the launch file for RVIZ, Gmapping, Stage_ros, Gazebo_ros:
-- launch_stage_gmapping_rviz
+- /launch_stage_gmapping_rviz
 
 <br><br>
 
