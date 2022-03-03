@@ -10,8 +10,9 @@ I developed the above 3 modules, corresponding to the folders:
 This folder contains the launch file for RVIZ, Gmapping, Stage_ros, Gazebo_ros:
 - launch_stage_gmapping_rviz
 
+<br><br>
 
-Two simulators are used for demonstration purpose. 
+Two simulators are used for demonstration purpose:
 
 1.  <a href="http://wiki.ros.org/stage/Tutorials/SimulatingOneRobot"> stage_ros </a>. 
     - It uses a bmp image to build the world. I draw my map using this bitmap tool <a href="https://www.pixilart.com/"> <i>pixilart</i> </a> .
