@@ -98,6 +98,7 @@ In the planning module, the unkown region (dark green) is treated the same as cl
 
 
 <b>Gazebo</b>
+
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_gazebo_turtle.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_gazebo_turtle.gif" alt="local gif" title="local" width="750"/>
 </a>
