@@ -32,6 +32,12 @@ For slam, I am using the standard Gmapping.
 - limits, algorithm, math.h
 
 
+### To-Do
+- Add algos from random-tree family, and compare with the A* family here.
+- Add MPC Model-predictive-controller.
+- Add potential field method for path planning.
+
+
 ----
 ### Global goal and Global path
 
