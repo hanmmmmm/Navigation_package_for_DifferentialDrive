@@ -44,7 +44,7 @@ For slam, I am using the standard Gmapping.
 
 
 ### Build
-Place the needed folders in a ros workspace, e.g. '''catkin_ws/src/''', and run catkin_make at '''catkin_ws''' 
+Place the needed folders in a ros workspace, e.g. ```catkin_ws/src/```, and run catkin_make at ```catkin_ws``` 
 
 
 ### To-Do
