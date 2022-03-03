@@ -88,12 +88,13 @@ This is also a full working demo actually, since the robot is moving following t
 ----
 ### Working demo
 
-<b>Stage sim</b>
 Several new goals are added while the robot is moving. The paths are updated to guide the robot. 
 
 The controller module use <i>odometry</i> and <i>local_path</i> to generate the disired linear & angular velocity for the robot to follow the <i>local_path</i>. 
 
 In the planning module, the unkown region (dark green) is treated the same as clear region (bright white).  Becasue the global planning is consantly updating the global path, a new path will be found if the existing path pass through a new-found obstacle. 
+
+<b>1. Stage sim</b>
 
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif" alt="local gif" title="local" width="750"/>
@@ -102,7 +103,7 @@ In the planning module, the unkown region (dark green) is treated the same as cl
 <br><br>
 
 
-<b>Gazebo</b>
+<b>2. Gazebo</b>
 
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_gazebo_turtle.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_gazebo_turtle.gif" alt="local gif" title="local" width="750"/>
