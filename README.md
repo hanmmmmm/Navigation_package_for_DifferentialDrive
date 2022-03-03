@@ -43,6 +43,10 @@ For slam, I am using the standard Gmapping.
 - limits, algorithm, math.h
 
 
+### Build
+Place the needed folders in a ros workspace, e.g. '''~/catkin_ws/src/''', and run catkin_make at '''~/catkin_ws''' 
+
+
 ### To-Do
 - Add algos from random-tree family, and compare with the A* family here.
 - Add MPC Model-predictive-controller.
