@@ -81,6 +81,8 @@ Several new goals are added while the robot is moving. The paths are updated to 
 
 The controller module use <i>odometry</i> and <i>local_path</i> to generate the disired linear & angular velocity for the robot to follow the <i>local_path</i>. 
 
+In the planning module, the unkown region (dark green) is treated the same as clear region (bright white).  Becasue the global planning is consantly updating the global path, a new path will be found if the existing path pass through a new-found obstacle. 
+
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_demo_1.gif" alt="local gif" title="local" width="750"/>
 </a>
