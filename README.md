@@ -21,10 +21,9 @@ Two simulators are used.
 </a>
 
 <br>
+<br>
 
 For slam, I am using the standard Gmapping. 
-
-<br>
 
 
 ### ROS messages being used:
