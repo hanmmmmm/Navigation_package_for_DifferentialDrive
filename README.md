@@ -18,6 +18,12 @@ ROS messages being used:
 
 The line of green arrows is the path, from current location to the goal location.
 
+This example is using A* algorithm to find the path. 
+
+Each path-finding takes <1~20 ms. The more obstacles between robot and goal, the longer time it takes to find the valid path.
+
+This node is set to update the global path about 2~3 Hz even though it could do much faster, since global path doesn't need to be updated too frequently. 
+
 <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_global_path.gif" alt="goal gif" title="set goal" width="750"/>
 </a>
