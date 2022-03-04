@@ -48,9 +48,19 @@ private:
     std::atomic<bool> FLAG_atom_odom_in_use;
 
 
+    float pursuit_cmdvel_linear_ratio_;
+    float pursuit_cmdvel_max_linear_;
+    float putsuit_cmdvel_max_yaw_rate_;
+    int pursuit_lookforward_steps_;
+
     geometry_msgs::Twist cmdvel_msg_;
 
     float map_size_;
+
+    std::string cmd_vel_publish_topic_name_;
+
+    std::string odom_subscribe_topic_name_;
+    std::string local_path_subscribe_topic_name_;
 
     ros::Publisher cmd_vel_puber_ ;    
     ros::Subscriber odom_suber_ ;
@@ -62,6 +72,7 @@ private:
 
     float pose_pred_duration_; // seconds
 
+    void load_parameters();
 
     float rectify( float a);
 

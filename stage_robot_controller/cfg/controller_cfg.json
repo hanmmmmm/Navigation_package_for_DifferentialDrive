@@ -1,0 +1,16 @@
+{
+    "topic_names": {
+      "cmd_vel_publish_topic_name_": "cmd_vel",
+      "local_path_subscribe_topic_name_": "local_path",
+      "odom_subscribe_topic_name_": "odom"
+    },
+  
+    "gene_cmdvel_time_interval_": 0.3,
+    
+    "pose_pred_duration_" : 1.0,
+
+    "pursuit_cmdvel_linear_ratio": 0.5,
+    "pursuit_cmdvel_max_linear": 0.5,
+    "putsuit_cmdvel_max_yaw_rate": 0.5,
+    "pursuit_lookforward_steps": 4
+}

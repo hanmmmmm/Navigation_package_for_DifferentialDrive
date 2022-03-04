@@ -5,6 +5,13 @@
 
 #include <thread>
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+
+namespace pt = boost::property_tree;
+
+
 Diff_drive_v1_class::Diff_drive_v1_class(const ros::NodeHandle nh_in): pathPoint(), nh_{nh_in}
 {
     cout << "Diff_drive_v1_class  init " << endl;
@@ -16,22 +23,17 @@ Diff_drive_v1_class::Diff_drive_v1_class(const ros::NodeHandle nh_in): pathPoint
     // FLAG_atom_global_path_in_use.store(false);
     // FLAG_atom_local_map_in_use.store(false);
     FLAG_atom_odom_in_use.store(false);
-    
-    pose_pred_duration_ = 1.0;
 
+    load_parameters();
+    
     map_size_ = 2.0;
 
-    gene_cmdvel_time_interval_ = 0.1 ;
-
-
     cout << "sub and pub" << endl;
+    
+    cmd_vel_puber_ = nh_.advertise<geometry_msgs::Twist>( cmd_vel_publish_topic_name_, 10);
 
-    // local_map_puber_ = nh_.advertise<nav_msgs::OccupancyGrid>("local_map", 10);
-    // local_path_puber_ = nh_.advertise<nav_msgs::Path>("local_path", 10);
-    cmd_vel_puber_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 10);
-
-    odom_suber_ = nh_.subscribe("odom", 10, &Diff_drive_v1_class::odom_callback, this);
-    local_path_suber_ = nh_.subscribe( "local_path", 10, &Diff_drive_v1_class::local_path_callback, this );
+    odom_suber_ = nh_.subscribe( odom_subscribe_topic_name_ , 10, &Diff_drive_v1_class::odom_callback, this);
+    local_path_suber_ = nh_.subscribe( local_path_subscribe_topic_name_, 10, &Diff_drive_v1_class::local_path_callback, this );
 
     periodic_cmdvel_ = nh_.createTimer( ros::Duration(gene_cmdvel_time_interval_), &Diff_drive_v1_class::gene_cmdvel, this );
 
@@ -44,6 +46,23 @@ Diff_drive_v1_class::~Diff_drive_v1_class()
 }
 
 
+void Diff_drive_v1_class::load_parameters()
+{
+    pt::ptree root;
+    pt::read_json("/home/jf/robot_navigation_module_v1/src/stage_robot_controller/cfg/controller_cfg.json", root);
+
+    gene_cmdvel_time_interval_ = root.get<float>("gene_cmdvel_time_interval_");
+
+    pt::ptree topic_names = root.get_child("topic_names");
+
+    cmd_vel_publish_topic_name_ = topic_names.get<std::string>("cmd_vel_publish_topic_name_");
+    local_path_subscribe_topic_name_ = topic_names.get<std::string>("local_path_subscribe_topic_name_");
+    odom_subscribe_topic_name_ = topic_names.get<std::string>("odom_subscribe_topic_name_");
+
+    pursuit_cmdvel_linear_ratio_ = root.get<float>("pursuit_cmdvel_linear_ratio");
+    pursuit_lookforward_steps_ = root.get<int>("pursuit_lookforward_steps");
+}
+
 
 void Diff_drive_v1_class::gene_cmdvel( const ros::TimerEvent &event )
 {
@@ -51,26 +70,13 @@ void Diff_drive_v1_class::gene_cmdvel( const ros::TimerEvent &event )
     float v = 0.3;
     float w = 0.3;
 
-    // cout << "xxxxx " << endl;
-    
-    // while( FLAG_atom_local_path_in_use.load() )
-    // {
-    //     std::this_thread::yield();
-    // }
-    // FLAG_atom_local_path_in_use.store(true);
-
-    // for(auto pppp : path_)
-    // {
-    //     cout << pppp.x << " " << pppp.y << endl;
-    // }
-
     float px, py;
     for(int i =0; i<path_.size(); i++)
     {
         px = path_[i].x;
         py = path_[i].y;
         cout << path_[i].x << " " << path_[i].y << endl;
-        if( i == 3)
+        if( i == pursuit_lookforward_steps_-1)
         {
             break;
         }
@@ -83,7 +89,7 @@ void Diff_drive_v1_class::gene_cmdvel( const ros::TimerEvent &event )
     float d = sqrt( px*px + py*py );
     float sin_alpha = py/d;
 
-    v = 0.5 * px;
+    v = pursuit_cmdvel_linear_ratio_ * px;
     w = 2 * v * sin_alpha / d;
 
     cmdvel_msg_.linear.x = v;
