@@ -38,10 +38,10 @@ Two simulators are used for demonstration purpose:
 
 <br>
 
-<i>An overview of the Gazebo world: </i>
+<i>Robot exploring the map to reach the goal: </i>
 
-<a id="turtle" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/gazebo_turtle.gif">
-    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/gazebo_turtle.gif" alt="gazebo turtle" title="gazebo turtle" width="750"/>
+<a id="turtle" href="https://github.com/hanmmmmm/Navigation_package_for_DifferentialDrive/blob/main/gifs/nav_gazebo_turtle_house_one.gif">
+    <img src="https://github.com/hanmmmmm/Navigation_package_for_DifferentialDrive/blob/main/gifs/nav_gazebo_turtle_house_one.gif" alt="gazebo turtle" title="gazebo turtle" width="790"/>
 </a>
 
 <br>
