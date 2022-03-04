@@ -7,7 +7,10 @@
 #include <algorithm>
 #include <atomic>
 #include <thread>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
+// #include <filesystem>
 
 #include "sensor_msgs/LaserScan.h"
 #include "nav_msgs/OccupancyGrid.h"
@@ -16,7 +19,7 @@
 #include "nav_msgs/Path.h"
 #include "geometry_msgs/PoseStamped.h"
 
-
+namespace pt = boost::property_tree;
 
 globalHandle::globalHandle(const ros::NodeHandle nh_in_) : pathPoint(), nh_{nh_in_}
 {
@@ -27,34 +30,58 @@ globalHandle::globalHandle(const ros::NodeHandle nh_in_) : pathPoint(), nh_{nh_i
     FLAG_atom_odom_in_use.store(false);
     FLAG_atom_global_goal_available.store(false);
 
-    FLAG_use_first_map_ = true;
-    processed_map_count_ = 0;
-
-    map_info_.meter_width = 250;
-    map_info_.meter_height = 250; 
-    map_info_.frameID = "map";
+    load_parameters();
 
     build_inflate_sample(inflation_.inflate_sample, inflation_.inflate_radius);
 
-    path_plan_time_interval = 1.5;
+    map_puber_  = nh_.advertise<nav_msgs::OccupancyGrid>( map_published_topic_name_, 10);
+    path_puber_ = nh_.advertise<nav_msgs::Path>( path_published_topic_name_ ,  10);
 
-    map_puber_  = nh_.advertise<nav_msgs::OccupancyGrid>("global_map_inflated", 10);
-    path_puber_ = nh_.advertise<nav_msgs::Path>(         "global_path",         10);
+    suber_map_ = nh_.subscribe( map_subscribed_topic_name_ , 10, &globalHandle::map_callback,  this);
+    suber_goal_= nh_.subscribe( goal_subscribed_topic_name_ , 10, &globalHandle::goal_callback, this);
+    suber_odom_= nh_.subscribe( odom_subscribed_topic_name_ , 10, &globalHandle::odom_callback, this);
 
-    suber_map_ = nh_.subscribe("map",                   10, &globalHandle::map_callback,  this);
-    suber_goal_= nh_.subscribe("move_base_simple/goal", 10, &globalHandle::goal_callback, this);
-    suber_odom_= nh_.subscribe("odom",                  10, &globalHandle::odom_callback, this);
-
-    periodic_path_planer_ = nh_.createTimer( ros::Duration(path_plan_time_interval), &globalHandle::path_plan, this );
+    periodic_path_planer_ = nh_.createTimer( ros::Duration(path_plan_time_interval_), &globalHandle::path_plan, this );
 
     cout << "globalHandle  init done" << endl;
 
 }
 
 
+
+void globalHandle::load_parameters()
+{
+    // char tmp[256];
+    // getcwd(tmp, 256);
+
+    // cout << tmp << endl;
+
+    pt::ptree root;
+
+    pt::read_json("/home/jf/robot_navigation_module_v1/src/global_planner/cfg/global_planner_cfg.json", root);
+
+    path_finding_timeout_ms_ = root.get<int>("path_finding_timeout_ms_");
+    path_plan_time_interval_ = root.get<float>("path_plan_time_interval_sec");
+
+    pt::ptree inflate = root.get_child("inflation");
+
+    inflation_.inflate_radius = inflate.get<int>("inflate_radius");
+
+    pt::ptree topic_names = root.get_child("topic_names");
+
+    map_subscribed_topic_name_ = topic_names.get<std::string>("map_subscribed_topic_name_");
+    goal_subscribed_topic_name_ = topic_names.get<std::string>("goal_subscribed_topic_name_");
+    odom_subscribed_topic_name_ = topic_names.get<std::string>("odom_subscribed_topic_name_");
+
+    map_published_topic_name_ = topic_names.get<std::string>("map_published_topic_name_");
+    path_published_topic_name_ = topic_names.get<std::string>("path_published_topic_name_");
+}
+
+
+
 void globalHandle::path_plan( const ros::TimerEvent &event )
 {
-    cout << "\nTimerEvent path_plan" << endl;
+    cout << "\nTimer Event: path_plan" << endl;
 
     // re-path-plan
     if ( FLAG_atom_global_goal_available.load() )
@@ -88,6 +115,7 @@ void globalHandle::path_plan( const ros::TimerEvent &event )
         {
             // change the goal pose
             cout << "\nGoal is obstacle, exiting" << endl;
+            // return;
         }
 
         FLAG_atom_global_goal_in_use.store(false);
@@ -95,13 +123,30 @@ void globalHandle::path_plan( const ros::TimerEvent &event )
 
 
         // path planning 
-        if(robot_pose_.x_grid != robot_pose_.x_grid_prev  ||  robot_pose_.y_grid != robot_pose_.y_grid_prev)
+        bool new_robot_pose = robot_pose_.x_grid != robot_pose_.x_grid_prev  ||  robot_pose_.y_grid != robot_pose_.y_grid_prev;
+        bool new_goal_pose = global_goal_.x_meter_last != global_goal_.x_meter ||
+                            global_goal_.y_meter_last != global_goal_.y_meter ||
+                            global_goal_.yaw_rad_last != global_goal_.yaw_rad;
+
+        cout << "new_robot_pose " << new_robot_pose  << "   new_goal_pose " << new_goal_pose << endl;
+
+        if(new_goal_pose || new_robot_pose)
         {
-            path_finder_.setup( robot_xy, goal_xy, global_goal_.yaw_rad , map_info_.grid_map, map_info_.grid_height, map_info_.grid_width );
-            path_finder_.search();
-            path_ = path_finder_.get_path();
-            path_prev_ = path_;
-            cout << "path_ steps  " << path_.size() << endl;
+            path_finder_.setup( robot_xy, goal_xy, global_goal_.yaw_rad , map_info_.grid_map, map_info_.grid_height, map_info_.grid_width, path_finding_timeout_ms_ );
+            bool find_path = path_finder_.search();
+            if(find_path)
+            {
+                path_ = path_finder_.get_path();
+                path_prev_ = path_;
+                cout << "Found new path, steps  " << path_.size() << endl;
+                // cout << "path_prev_ steps  " << path_prev_.size() << endl;
+            }
+            else
+            {
+                cout << "Path finding failed." << endl;
+            }
+            
+            
         }
         else
         {
@@ -110,6 +155,15 @@ void globalHandle::path_plan( const ros::TimerEvent &event )
         }
         robot_pose_.x_grid_prev = robot_pose_.x_grid;
         robot_pose_.y_grid_prev = robot_pose_.y_grid;
+
+        if(new_goal_pose)
+        {
+            global_goal_.x_meter_last = global_goal_.x_meter;
+            global_goal_.y_meter_last = global_goal_.y_meter;
+            global_goal_.yaw_rad_last = global_goal_.yaw_rad;
+        }
+
+        FLAG_atom_global_map_in_use.store(false);
 
         
 
@@ -138,8 +192,11 @@ void globalHandle::path_plan( const ros::TimerEvent &event )
         path_puber_.publish(  g_path);
 
 
-        FLAG_atom_global_map_in_use.store(false);
+        
 
+    }
+    else{
+        cout << "Waiting for 1st goal " << endl;
     }
 
 }
@@ -149,7 +206,7 @@ void globalHandle::map_callback(const nav_msgs::OccupancyGrid::ConstPtr &msg)
 {
     auto rostime = ros::Time::now();
 
-    cout << "\nReceived a new map, time: sec " << rostime.sec << endl;
+    // cout << "\nReceived a new map, time: sec " << rostime.sec << endl;
 
     // if( FLAG_use_first_map && processed_map_count_ >= 1)
     // {
@@ -168,7 +225,7 @@ void globalHandle::map_callback(const nav_msgs::OccupancyGrid::ConstPtr &msg)
 
     long position_counter = 0;
     // update the map, where the grid value is 100 (obstacle)
-    cout << "map inflation  " << endl;
+    // cout << "map inflation  " << endl;
     for (auto p : msg->data)
     {
         if(p > 1)
@@ -183,11 +240,11 @@ void globalHandle::map_callback(const nav_msgs::OccupancyGrid::ConstPtr &msg)
         }
         position_counter ++;
     }
-    cout << "position_counter  " << position_counter  << endl;
+    // cout << "position_counter  " << position_counter  << endl;
 
     //publish out 
     map_puber_.publish(inflated_map);
-    processed_map_count_ ++;
+    // processed_map_count_ ++;
     // cout << "processed_map_count_  " << processed_map_count_ << endl;
 
 
@@ -201,6 +258,7 @@ void globalHandle::map_callback(const nav_msgs::OccupancyGrid::ConstPtr &msg)
     map_info_.grid_width = msg->info.width;
     map_info_.grid_height = msg->info.height;
     map_info_.resolution = msg->info.resolution;
+    map_info_.frameID = msg->header.frame_id;
     map_info_.grid_map.resize( map_info_.grid_width * map_info_.grid_height );
     int x_offset = msg->info.origin.position.x / msg->info.resolution;
     int y_offset = msg->info.origin.position.y / msg->info.resolution;

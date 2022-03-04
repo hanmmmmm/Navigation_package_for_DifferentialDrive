@@ -10,33 +10,32 @@
 #include <chrono>
 
 #include "astar.h"
-// #include "utils/img_io.h"
 
 using std::chrono::high_resolution_clock;
 using std::vector;
 using std::array;
 
-AstarClass::AstarClass( const int startnode[], const int goalnode[], const std::vector<int8_t>& map, const int height, const int width ): pathPoint()
-{
-    start_xy[0] = startnode[0];
-    start_xy[1] = startnode[1];
-    goal_xy[0] = goalnode[0];
-    goal_xy[1] = goalnode[1];
-    all_nodes[start_xy].parent = start_xy;
-    all_nodes[start_xy].node_gcost = 0;
-    all_nodes[start_xy].node_state = 1;
+// AstarClass::AstarClass( const int startnode[], const int goalnode[], const std::vector<int8_t>& map, const int height, const int width ): pathPoint()
+// {
+//     start_xy[0] = startnode[0];
+//     start_xy[1] = startnode[1];
+//     goal_xy[0] = goalnode[0];
+//     goal_xy[1] = goalnode[1];
+//     all_nodes[start_xy].parent = start_xy;
+//     all_nodes[start_xy].node_gcost = 0;
+//     all_nodes[start_xy].node_state = 1;
 
-    grid_map = map;
+//     grid_map = map;
 
-    map_width = width;   
-    map_height = height; 
+//     map_width = width;   
+//     map_height = height; 
 
-    build_motion_model();
+//     build_motion_model();
 
-    print_init_info();
-}
+//     print_init_info();
+// }
 
-void AstarClass::setup( const int startnode[], const int goalnode[], const float goal_angle, const std::vector<int8_t>& map, const int height, const int width )
+void AstarClass::setup( const int startnode[], const int goalnode[], const float goal_angle, const std::vector<int8_t>& map, const int height, const int width, const int timeout_ms )
 {
     start_xy[0] = startnode[0];
     start_xy[1] = startnode[1];
@@ -44,6 +43,8 @@ void AstarClass::setup( const int startnode[], const int goalnode[], const float
     goal_xy[1] = goalnode[1];
 
     goal_angle_ = goal_angle;
+
+    search_time_out_ms_ = timeout_ms;
 
     all_nodes.clear();
     path.clear();
@@ -72,7 +73,7 @@ void AstarClass::setup( const int startnode[], const int goalnode[], const float
     // map_width = w_count;   
     // map_height = h_count; 
 
-    std::cout << "Setup A* " << std::endl;
+    std::cout << "Setup A* ";// << std::endl;
     std::cout << "map width: " << map_width << " ;height: "  << map_height  ;
     std::cout << "  start_xy: " << start_xy[0] << ", "  << start_xy[1] ;
     std::cout << "  goal_xy: " << goal_xy[0] << ", "  << goal_xy[1]  << std::endl;
@@ -251,32 +252,46 @@ void AstarClass::explore_one_ite(vector< array<int, 2>> active_nodes){
 }
 
 
-void AstarClass::search(){
+bool AstarClass::search(){
 
-    std::cout << "A* looking for path " << std::endl;
+    std::cout << "A* looking for path. ";// << std::endl;
 
     high_resolution_clock::time_point time1 = high_resolution_clock::now();
-
+    high_resolution_clock::time_point time_temp;
     int count = 0;
 
     while(all_nodes[goal_xy].node_state == 0){
+
+        // check time used
+        time_temp = high_resolution_clock::now();
+        auto duration_temp = std::chrono::duration_cast<std::chrono::microseconds>(time_temp-time1);
+        int time_past = int(duration_temp.count()/1000.0);
+        if(time_past >= search_time_out_ms_)
+        {
+            std::cout << "Search Timeout" << std::endl;
+            return false;
+        }
+
+        // check if all open nodes are already explored, and still not find goal
         auto opennodes = find_min_Fcost_nodes();
         if(opennodes.size() == 0)
         {
             std::cout << "No valid path found. \nGetting the path closest to the goal." << std::endl;
             find_min_FHcost_nodes(goal_xy);
-            return ;
+            return true;
         }
+        
+        // regular A* exploration
         explore_one_ite( opennodes );
 
-        // std::cout << "search " << count << std::endl;
         count ++;
     }
 
     high_resolution_clock::time_point time2 = high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(time2-time1);
 
-    std::cout << "A* finds the goal. Time used " << int(duration.count()/1000.0) << " ms" << std::endl;
+    std::cout << "Found the goal. Time used " << int(duration.count()/1000.0) << " ms." << std::endl;
+    return true;
 }
 
 

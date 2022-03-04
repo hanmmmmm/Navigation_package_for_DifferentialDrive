@@ -33,11 +33,13 @@ private:
     {
         float x_meter, y_meter, yaw_rad;
         int x_grid, y_grid;
+
+        float x_meter_last, y_meter_last, yaw_rad_last;
     };
 
     struct globalMapInfo
     {
-        float resolution = 0.05; // Resolution of the grid [m/cell].
+        float resolution ; // Resolution of the grid [m/cell].
         float meter_width;       // meter
         float meter_height;      // meter
         int grid_width;          // grid_wise
@@ -56,7 +58,7 @@ private:
     struct inflationInfo
     {
         std::vector<std::vector<int8_t>> inflate_sample;
-        int inflate_radius = 5;  // grid_wise
+        int inflate_radius ;  // grid_wise
     };
 
     struct robotPose
@@ -67,8 +69,9 @@ private:
         int x_grid_prev, y_grid_prev;
     };
 
-    float path_plan_time_interval;
+    float path_plan_time_interval_;
 
+    int path_finding_timeout_ms_;
 
     AstarClass path_finder_;
 
@@ -93,6 +96,12 @@ private:
     std::atomic<bool> FLAG_atom_global_map_in_use;
     std::atomic<bool> FLAG_atom_odom_in_use;
 
+    std::string map_subscribed_topic_name_;
+    std::string goal_subscribed_topic_name_;
+    std::string odom_subscribed_topic_name_;
+    std::string map_published_topic_name_;
+    std::string path_published_topic_name_;
+
     ros::Publisher map_puber_;
     ros::Publisher path_puber_;
 
@@ -106,7 +115,9 @@ private:
 
 
     //  member functions
-    void get_tf_laser_to_base(std::array<float, 3> &the_tf);
+    // void get_tf_laser_to_base(std::array<float, 3> &the_tf);
+
+    void load_parameters();
 
     float rectify(float angle);
 

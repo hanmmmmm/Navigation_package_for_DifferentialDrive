@@ -52,6 +52,8 @@ private:
 
     float resize_img_ratio = 2.0;
 
+    int search_time_out_ms_;
+
     // struct pathPoint
     // {
     //     std::array<int, 2> xy;
@@ -81,7 +83,7 @@ private:
 public:
 
     AstarClass();
-    void setup(const int startnode[], const int goalnode[], const float goal_angle, const std::vector<int8_t>& map, const int height, const int width );
+    void setup(const int startnode[], const int goalnode[], const float goal_angle, const std::vector<int8_t>& map, const int height, const int width, const int timeout_ms  );
 
     AstarClass(const int startnode[], const int goalnode[], const std::vector<int8_t>& map, const int height, const int width );
 
@@ -93,7 +95,7 @@ public:
 
 
     
-    void search();
+    bool search();
     std::deque< pathPoint > get_path();
     void print_path();
 
