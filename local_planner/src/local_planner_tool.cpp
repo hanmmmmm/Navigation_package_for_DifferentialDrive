@@ -3,7 +3,7 @@
 
 
 
-void scanListener::inflate( vector<int8_t>& grids, const int x, const int y, const int map_width, const int map_height, const vector<vector<int8_t>>& inflate_sample_in , const int radius  )
+void Local_planner_class::inflate( vector<int8_t>& grids, const int x, const int y, const int map_width, const int map_height, const vector<vector<int8_t>>& inflate_sample_in , const int radius  )
 {
     
     int x_start, x_end, y_start, y_end;
@@ -22,7 +22,7 @@ void scanListener::inflate( vector<int8_t>& grids, const int x, const int y, con
 
     if ( x+radius > map_width )
     {
-        x_end = map_width;
+        x_end = map_width-1;
         x_end_sam = 2*radius - ( radius- ( map_width - 1 - x ) );
     }
     else
@@ -45,7 +45,7 @@ void scanListener::inflate( vector<int8_t>& grids, const int x, const int y, con
 
     if ( y+radius > map_height )
     {
-        y_end = map_height;
+        y_end = map_height-1;
         y_end_sam = 2*radius - ( radius- ( map_height - 1 - y ) );
     }
     else
@@ -121,7 +121,7 @@ void scanListener::inflate( vector<int8_t>& grids, const int x, const int y, con
 
 
 
-void scanListener::build_inflate_sample( std::vector< std::vector<int8_t> >& inflate_sample_target, const int radius )
+void Local_planner_class::build_inflate_sample( std::vector< std::vector<int8_t> >& inflate_sample_target, const int radius )
 {
     int step_size = 100/(radius+1);
     int center = radius;
@@ -136,22 +136,22 @@ void scanListener::build_inflate_sample( std::vector< std::vector<int8_t> >& inf
             if( dx*dx + dy*dy < radius*radius )
             {
                 a_row.push_back(100);
-                // std::cout << "1 ";
+                std::cout << "1 ";
             }
             else
             {
                 a_row.push_back(0);
-                // std::cout << "0 ";
+                std::cout << "0 ";
             }
         }
-        // std::cout << std::endl;
+        std::cout << std::endl;
         inflate_sample_target.push_back(a_row);
     }
     
 }
 
 
-float scanListener::rectify( float a)
+float Local_planner_class::rectify( float a)
 {
     float angle = a;
     while (angle > 2*M_PI)
@@ -175,7 +175,7 @@ float scanListener::rectify( float a)
 
 
 
-// void scanListener::get_tf_laser_to_base(std::array<float, 3> &the_tf)
+// void Local_planner_class::get_tf_laser_to_base(std::array<float, 3> &the_tf)
 // {
 //     tf::TransformListener listener;
 //     tf::StampedTransform transform;

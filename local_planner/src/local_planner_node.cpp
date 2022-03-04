@@ -3,12 +3,15 @@
 
 #include "ros/ros.h"
 #include "tf/transform_listener.h"
-// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <algorithm>
 #include <atomic>
 #include <future>
 #include <thread>
 #include <chrono>
+
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
 
 #include "sensor_msgs/LaserScan.h"
 #include "nav_msgs/OccupancyGrid.h"
@@ -17,13 +20,14 @@
 
 
 
+namespace pt = boost::property_tree;
 
-scanListener::scanListener(const ros::NodeHandle nh_in)
+Local_planner_class::Local_planner_class(const ros::NodeHandle nh_in)
 : nh_{nh_in}
 {
-    cout << "scanListener  init " << endl;
+    cout << "Local_planner_class  init " << endl;
 
-    cout << "setup variables" << endl;
+    // cout << "setup variables" << endl;
     
     FLAG_atom_local_goal_available.store(false);
     FLAG_atom_local_goal_in_use.store(false);
@@ -31,46 +35,65 @@ scanListener::scanListener(const ros::NodeHandle nh_in)
     FLAG_atom_local_map_in_use.store(false);
     FLAG_atom_odom_in_use.store(false);
     
+    // cout << "setup map_info_" << endl;
 
-    cout << "setup map_info_" << endl;
-
-    map_info_.frameID = "/base_link";
-    map_info_.resolution = 0.1;
-    map_info_.meter_width = 2.0;
-    map_info_.meter_height = 2.0;
-    map_info_.grid_width = map_info_.meter_width / map_info_.resolution;
-    map_info_.grid_height = map_info_.meter_height / map_info_.resolution;
-    map_info_.grid_map.resize( map_info_.grid_height * map_info_.grid_width );
-
-    inflation_.inflate_radius = 3;
-    build_inflate_sample(inflation_.inflate_sample, inflation_.inflate_radius);
-
-    path_plan_time_interval = 0.2;
-
-    path_plan_timeout_ms_ = 500;
+    load_parameters();
 
     cout << "sub and pub" << endl;
 
-    local_map_puber_ = nh_.advertise<nav_msgs::OccupancyGrid>("local_map", 10);
-    local_path_puber_ = nh_.advertise<nav_msgs::Path>("local_path", 10);
+    local_map_puber_ = nh_.advertise<nav_msgs::OccupancyGrid>( local_map_topic_name_ , 10);
+    local_path_puber_ = nh_.advertise<nav_msgs::Path>( local_path_topic_name_ , 10);
 
-    scan_suber_ = nh_.subscribe("base_scan", 10, &scanListener::scan_callback, this);
-    odom_suber_ = nh_.subscribe("odom", 10, &scanListener::odom_callback, this);
-    global_path_suber_ = nh_.subscribe( "global_path", 10, &scanListener::global_path_callback, this );
+    scan_suber_ = nh_.subscribe( scan_topic_name_ , 10, &Local_planner_class::scan_callback, this);
+    odom_suber_ = nh_.subscribe( odom_topic_name_ , 10, &Local_planner_class::odom_callback, this);
+    global_path_suber_ = nh_.subscribe( global_path_topic_name_ , 10, &Local_planner_class::global_path_callback, this );
 
-    periodic_path_planer_ = nh_.createTimer( ros::Duration(path_plan_time_interval), &scanListener::path_plan, this );
+    periodic_path_planer_ = nh_.createTimer( ros::Duration(path_plan_time_interval_), &Local_planner_class::path_plan, this );
 
+    build_inflate_sample(inflation_.inflate_sample, inflation_.inflate_radius);
 
-    // get_tf_laser_to_base(laser_base_tf);
-
-    
-
-    std::cout << "scanListener  init done" << std::endl;
+    std::cout << "Local_planner_class  init done" << std::endl;
 
 }
 
 
-void scanListener::scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg)
+
+void Local_planner_class::load_parameters()
+{
+    pt::ptree root;
+    pt::read_json("/home/jf/robot_navigation_module_v1/src/local_planner/cfg/local_planner_cfg.json", root);
+
+    path_plan_timeout_ms_ = root.get<int>("path_finding_timeout_ms_");
+    path_plan_time_interval_ = root.get<float>("path_plan_time_interval_sec");
+
+    pt::ptree inflate = root.get_child("inflation");
+    inflation_.inflate_radius = inflate.get<int>("inflate_radius");
+
+    pt::ptree topic_names = root.get_child("topic_names");
+
+    scan_topic_name_ = topic_names.get<std::string>("scan_subscribed_topic_name_");
+    global_path_topic_name_ = topic_names.get<std::string>("globalpath_subscribed_topic_name_");
+    odom_topic_name_ = topic_names.get<std::string>("odom_subscribed_topic_name_");
+
+    local_map_topic_name_ = topic_names.get<std::string>("map_published_topic_name_");
+    local_path_topic_name_ = topic_names.get<std::string>("path_published_topic_name_");
+
+
+    pt::ptree mapinfo = root.get_child("map_info_");
+    map_info_.frameID = mapinfo.get<std::string>("frameID");
+    map_info_.resolution = mapinfo.get<float>("resolution");
+    map_info_.meter_width = mapinfo.get<float>("meter_width");
+    map_info_.meter_height = mapinfo.get<float>("meter_height");
+    map_info_.grid_width = map_info_.meter_width / map_info_.resolution;
+    map_info_.grid_height = map_info_.meter_height / map_info_.resolution;
+    map_info_.grid_map.resize( map_info_.grid_height * map_info_.grid_width );
+
+}
+
+
+
+
+void Local_planner_class::scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
     nav_msgs::OccupancyGrid local_grid;
     local_grid.header.frame_id = map_info_.frameID;
@@ -87,7 +110,8 @@ void scanListener::scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg)
 
     std::fill(map_info_.grid_map.begin(), map_info_.grid_map.end(), 0);
 
-    float point_angle = M_PI; // msg->angle_min;
+    // float point_angle = M_PI; // msg->angle_min;
+    float point_angle = msg->angle_min;
     const float angle_inc = msg->angle_increment;
 
     for (auto p : msg->ranges)
@@ -95,7 +119,7 @@ void scanListener::scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg)
         point_angle += angle_inc;
         point_angle = rectify(point_angle);
         
-        if(p < 10.0 && p > 0.1)
+        if(p < 3.0 && p > 0.1)
         {
             float p_x_meter = p*cos(point_angle) + map_info_.meter_width/2.0 ;
             float p_y_meter = p*sin(point_angle) + map_info_.meter_height/2.0 ;
@@ -116,7 +140,7 @@ void scanListener::scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg)
 }
 
 
-void scanListener::odom_callback(const nav_msgs::Odometry::ConstPtr &msg)
+void Local_planner_class::odom_callback(const nav_msgs::Odometry::ConstPtr &msg)
 {
     tf::Quaternion q(
         msg->pose.pose.orientation.x,
@@ -143,9 +167,9 @@ void scanListener::odom_callback(const nav_msgs::Odometry::ConstPtr &msg)
 }
 
 
-void scanListener::global_path_callback(const nav_msgs::Path::ConstPtr &msg)
+void Local_planner_class::global_path_callback(const nav_msgs::Path::ConstPtr &msg)
 {
-
+try{
 
     while( FLAG_atom_odom_in_use.load() )
     {
@@ -215,10 +239,16 @@ void scanListener::global_path_callback(const nav_msgs::Path::ConstPtr &msg)
     FLAG_atom_global_path_in_use.store(false);
 
 }
+catch(...){
+    cout << "global_path_callback  failed" << endl;
+}
+
+
+}
 
 
 
-void scanListener::path_plan( const ros::TimerEvent &event )
+void Local_planner_class::path_plan( const ros::TimerEvent &event )
 {
     cout << "\npath_plan :: TimerEvent " << endl;
 
@@ -292,7 +322,7 @@ void scanListener::path_plan( const ros::TimerEvent &event )
 
     array<float,3> goalpose= {local_goal_.x_meter, local_goal_.y_meter , local_goal_.yaw_rad};
 
-    cout << "path_plan :: goalpose: " << goalpose[0] << " " << goalpose[1] << " " << goalpose[2] << endl;
+    // cout << "path_plan :: goalpose: " << goalpose[0] << " " << goalpose[1] << " " << goalpose[2] << endl;
 
     path_finder_.setup( path_plan_timeout_ms_, startnode, startangle, goalpose, map_info_.meter_width, map_info_.meter_height, map_info_.grid_width, map_info_.grid_height, map_info_.grid_map );
     bool found_path = path_finder_.search();
@@ -326,7 +356,7 @@ void scanListener::path_plan( const ros::TimerEvent &event )
         pose.pose.orientation.z = qz;
         g_path.poses.push_back( pose );
 
-        cout << std::fixed << std::setprecision(3) << "path_plan :: path point: " << pose.pose.position.x << " " << pose.pose.position.y << " " << head << endl;
+        // cout << std::fixed << std::setprecision(3) << "path_plan :: path point: " << pose.pose.position.x << " " << pose.pose.position.y << " " << head << endl;
 
     }
     local_path_puber_.publish(  g_path );
@@ -340,7 +370,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "local_planner_node");
     ros::NodeHandle n;
     
-    scanListener listener( n );
+    Local_planner_class listener( n );
     
     ros::AsyncSpinner s(4);
     s.start();

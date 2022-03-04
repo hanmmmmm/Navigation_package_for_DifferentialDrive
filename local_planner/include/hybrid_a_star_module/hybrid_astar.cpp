@@ -329,6 +329,7 @@ bool Hybrid_astar_class::search()
     }
 
     std::cout << "Found the goal" << std::endl;
+    
     return true;
 }
 

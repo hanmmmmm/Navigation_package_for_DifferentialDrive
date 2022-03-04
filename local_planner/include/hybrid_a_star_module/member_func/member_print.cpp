@@ -19,15 +19,15 @@ void Hybrid_astar_class::print_init_info()
 
     std::cout << "\nHybrid_astar start"
               << "\nfine map size:  w: " << fine_map_width_ << " h: " << fine_map_height_
-              << "\ngrid map size:  w: " << grid_map_width_ << " h: " << grid_map_height_
+              << "    grid map size:  w: " << grid_map_width_ << " h: " << grid_map_height_
 
               << "\nStart location: "
               << start_pose_[0] << " " << start_pose_[1] << " " << start_pose_[2]
-              << "\nStart grid    : "
+              << "    Start grid    : "
               << start_grid_[0] << " " << start_grid_[1] << " " << start_grid_[2]
               << "\nGoal location : "
               << goal_pose_[0] << " " << goal_pose_[1] << " " << goal_pose_[2]
-              << "\nGoal grid     : "
+              << "    Goal grid     : "
               << goal_grid_[0] << " " << goal_grid_[1] << " " << goal_grid_[2]
 
             //   << "\n\nmotion model: \n"

@@ -1,0 +1,25 @@
+{
+    "topic_names": {
+      "scan_subscribed_topic_name_": "scan",
+      "globalpath_subscribed_topic_name_": "global_path",
+      "odom_subscribed_topic_name_": "odom",
+      "map_published_topic_name_": "local_map",
+      "path_published_topic_name_": "local_path"
+    },
+  
+    "path_plan_time_interval_sec": 0.2,
+    
+    "path_finding_timeout_ms_" : 500,
+    
+    "inflation": {
+      "inflate_radius": 3
+    },
+
+    "map_info_": {
+      "frameID" : "/base_link",
+      "resolution" : 0.1,
+      "meter_width" : 2.0,
+      "meter_height" : 2.0
+      
+    }
+}

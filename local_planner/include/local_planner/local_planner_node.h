@@ -25,7 +25,7 @@ using std::vector;
 
 
 
-class scanListener : public pathPoint
+class Local_planner_class : public pathPoint
 {
 private:
 
@@ -69,7 +69,7 @@ private:
         int x_grid_prev, y_grid_prev;
     };
 
-    float path_plan_time_interval;
+    float path_plan_time_interval_;
 
     std::deque<pathPoint> path_;
     std::deque<pathPoint> path_prev_;
@@ -85,6 +85,13 @@ private:
     inflationInfo inflation_;
 
     int path_plan_timeout_ms_;
+
+    std::string scan_topic_name_;
+    std::string odom_topic_name_; 
+    std::string global_path_topic_name_; 
+
+    std::string local_path_topic_name_; 
+    std::string local_map_topic_name_; 
 
     // std::deque< pathPoint > path_;
 
@@ -109,7 +116,9 @@ private:
 
 
     //  member functions
-    void get_tf_laser_to_base(array<float, 3> &the_tf);
+
+    void load_parameters();
+    // void get_tf_laser_to_base(array<float, 3> &the_tf);
 
     float rectify( float angle);
 
@@ -122,7 +131,8 @@ public:
 
 
 
-    scanListener(const ros::NodeHandle nh_in);
+    Local_planner_class(const ros::NodeHandle nh_in);
+    ~Local_planner_class(){};
 
     void scan_callback(const sensor_msgs::LaserScan::ConstPtr &msg);
     void odom_callback(const nav_msgs::Odometry::ConstPtr &msg);
