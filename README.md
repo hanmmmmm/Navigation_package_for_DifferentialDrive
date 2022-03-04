@@ -49,12 +49,20 @@ Two simulators are used for demonstration purpose:
 
 For slam, I am using the standard Gmapping for demonstration. 
 
+### rqt_grpah
 
-### ROS messages being used:
+This is the workflow within the system (using stage_ros simulator).
+
+<a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif">
+    <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif" alt="local gif" title="local" width="950"/>
+</a>
+
+
+### ROS messages used:
 - geometry_msgs:  Twist, PoseStamped
 - sensor_msgs:  LaserScan
 - nav_msgs:  OccupancyGrid, MapMetaData, Odometry, Path 
-- tf/transform_listener
+
 
 
 
@@ -140,17 +148,17 @@ The current path follower is Pure pursuit.
 </a>
 
 ----
-### RQT_graph
+<!-- ### RQT_graph -->
 
-This is the workflow within the system. 
+<!-- This is the workflow within the system.  -->
 
-The nodes <i>StageROS</i> and <i>GMapping</i> are standard ROS packages. 
+<!-- The nodes <i>StageROS</i> and <i>GMapping</i> are standard ROS packages.  -->
 
-The rest 3 modules are developed by myself.
+<!-- The rest 3 modules are developed by myself. -->
 
-<a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif">
+<!-- <a id="search" href="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif">
     <img src="https://github.com/hanmmmmm/navigation_package_V1/blob/main/gifs/nav_rqt.gif" alt="local gif" title="local" width="950"/>
-</a>
+</a> -->
 
 
 
