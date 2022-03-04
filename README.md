@@ -1,6 +1,6 @@
 # Navigation package for Differential Drive robots
 
-This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller.
+This is my implementation of a complete 2D navigation package, including global planner, local planner, and motion controller (path follower).
 
 I developed the above 3 modules, corresponding to the folders: 
 - /global_planner
@@ -121,6 +121,8 @@ Several new goals are added while the robot is moving. The paths are updated to 
 The controller module use <i>odometry</i> and <i>local_path</i> to generate the disired linear & angular velocity for the robot to follow the <i>local_path</i>. 
 
 In the planning module, the unkown region (dark green) is treated the same as clear region (bright white).  Becasue the global planning is consantly updating the global path, a new path will be found if the existing path pass through a new-found obstacle. 
+
+The current path follower is Pure pursuit. 
 
 <b>1. Stage sim</b>
 
