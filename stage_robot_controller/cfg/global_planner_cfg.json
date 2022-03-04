@@ -1,0 +1,17 @@
+{
+    "topic_names": {
+      "map_subscribed_topic_name_": "map",
+      "goal_subscribed_topic_name_": "move_base_simple/goal",
+      "odom_subscribed_topic_name_": "odom",
+      "map_published_topic_name_": "global_map_inflated",
+      "path_published_topic_name_": "global_path"
+    },
+  
+    "path_plan_time_interval_sec": 0.3,
+    
+    "path_finding_timeout_ms_" : 500,
+    
+    "inflation": {
+      "inflate_radius": 2
+    }
+}

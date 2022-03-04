@@ -49,7 +49,7 @@ void Diff_drive_v1_class::gene_cmdvel( const ros::TimerEvent &event )
 {
     cout << "gene_cmdvel " << endl;
     float v = 0.3;
-    float w = 0.2;
+    float w = 0.3;
 
     // cout << "xxxxx " << endl;
     
@@ -76,33 +76,15 @@ void Diff_drive_v1_class::gene_cmdvel( const ros::TimerEvent &event )
         }
     }
 
-    // float px = path_[4].x;// - map_size_/2;
-    // float py = path_[4].y;// - map_size_/2;
-
     // FLAG_atom_local_path_in_use.store(false);
 
     cout << "px " << px << "  py " << py << endl;
 
-    if(px < 0)
-    {
-        v = -v;
-    }
-    else
-    {
-        v =v;
-    }
+    float d = sqrt( px*px + py*py );
+    float sin_alpha = py/d;
 
-    if(abs(py) > 0.1)
-    {
-        if(py < 0)
-        {
-            w = -w;
-        }
-    }
-    else
-    {
-        w=0;
-    }
+    v = 0.5 * px;
+    w = 2 * v * sin_alpha / d;
 
     cmdvel_msg_.linear.x = v;
     cmdvel_msg_.angular.z = w;
