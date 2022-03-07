@@ -11,7 +11,11 @@
 #include "nav_msgs/Path.h"
 #include "geometry_msgs/PoseStamped.h"
 
-#include "../A_star_module/astar.h"
+// #include "../A_star_module/astar.h"
+// #include "../Dijkstra_module/dijkstra.h"
+
+#include "../planner_module/planner.h"
+
 #include "path_data.h"
 
 #include <algorithm>
@@ -73,7 +77,15 @@ private:
 
     int path_finding_timeout_ms_;
 
-    AstarClass path_finder_;
+    Planner_class path_finder_;
+
+    int planner_type_; 
+
+    // AstarClass path_finder_;
+    // DijkstracClass path_finder_;
+    // DijkstracClass* path_finder_ = new DijkstracClass();
+
+    // void* path_finder_;
 
     //  member variables
 

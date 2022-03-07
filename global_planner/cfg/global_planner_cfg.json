@@ -1,4 +1,8 @@
 {
+    "_comment": "0=Dijkstra; 1=A*; 2=D*-Lite; 3=LPA*; 4=RRT; 5=RRT*",
+
+    "path_plan_algo" : 1,
+
     "topic_names": {
       "map_subscribed_topic_name_": "map",
       "goal_subscribed_topic_name_": "move_base_simple/goal",

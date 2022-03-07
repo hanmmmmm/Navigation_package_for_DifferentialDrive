@@ -5,14 +5,14 @@
 #include <iostream>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
 #include <map>
-#include <opencv2/core.hpp>
 #include <algorithm>
 #include <set>
 
-#include "../global_planner/path_data.h"
+#include "../../global_planner/path_data.h"
 
-#include "utils/array_hasher.cpp"
+#include "../utils/array_hasher.h"
 
 
 
@@ -42,6 +42,7 @@ private:
     
     std::unordered_map<std::array<int, 2>, nodeInfo, ArrayHasher> all_nodes;
 
+    std::unordered_set< std::array<int, 2>, ArrayHasher > open_nodes;
 
     // cv::Mat mapCv;
     // cv::Mat map_for_view;

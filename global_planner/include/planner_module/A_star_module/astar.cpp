@@ -15,25 +15,6 @@ using std::chrono::high_resolution_clock;
 using std::vector;
 using std::array;
 
-// AstarClass::AstarClass( const int startnode[], const int goalnode[], const std::vector<int8_t>& map, const int height, const int width ): pathPoint()
-// {
-//     start_xy[0] = startnode[0];
-//     start_xy[1] = startnode[1];
-//     goal_xy[0] = goalnode[0];
-//     goal_xy[1] = goalnode[1];
-//     all_nodes[start_xy].parent = start_xy;
-//     all_nodes[start_xy].node_gcost = 0;
-//     all_nodes[start_xy].node_state = 1;
-
-//     grid_map = map;
-
-//     map_width = width;   
-//     map_height = height; 
-
-//     build_motion_model();
-
-//     print_init_info();
-// }
 
 void AstarClass::setup( const int startnode[], const int goalnode[], const float goal_angle, const std::vector<int8_t>& map, const int height, const int width, const int timeout_ms )
 {
@@ -48,10 +29,12 @@ void AstarClass::setup( const int startnode[], const int goalnode[], const float
 
     all_nodes.clear();
     path.clear();
+    open_nodes.clear();
 
     all_nodes[start_xy].parent = start_xy;
     all_nodes[start_xy].node_gcost = 0;
     all_nodes[start_xy].node_state = 1;
+    open_nodes.insert(start_xy);
 
     grid_map = map;
 
@@ -141,6 +124,8 @@ void AstarClass::explore_one_node(const array<int, 2> curr_xy){
     // move it into closed 
     all_nodes[curr_xy].node_state = 2;
 
+    open_nodes.erase(curr_xy);
+
     for(auto mm : motion_model_){
         int n_x = curr_xy[0] + mm[0];
         int n_y = curr_xy[1] + mm[1];
@@ -168,6 +153,7 @@ void AstarClass::explore_one_node(const array<int, 2> curr_xy){
 
                     all_nodes[n_node].node_fcost = all_nodes[n_node].node_gcost + hcost;
                     all_nodes[n_node].heading = heading;
+                    open_nodes.insert(n_node);
                 } 
                 if(all_nodes[n_node].node_state == 1 && all_nodes[n_node].parent != curr_xy)
                 {
@@ -195,9 +181,12 @@ vector< array<int, 2>> AstarClass::find_min_Fcost_nodes(){
     int min_cost = std::numeric_limits<int>::max(); 
 
     // if a node exist in node_parent
-    for(auto n : all_nodes){
-        array<int, 2> node = n.first;
-        if(all_nodes[node].node_state == 1){
+    // for(auto n : all_nodes){
+    //     array<int, 2> node = n.first;
+    for(auto n : open_nodes){
+        // array<int, 2> node = n.first;
+        array<int, 2> node = n;
+        // if(all_nodes[node].node_state == 1){
             int cost = all_nodes[node].node_fcost;
             if(cost < min_cost){
                 min_cost = cost;
@@ -207,7 +196,7 @@ vector< array<int, 2>> AstarClass::find_min_Fcost_nodes(){
             if(cost == min_cost){
                 out.push_back(node);
             }
-        }
+        // }
     }
     return out;
 }

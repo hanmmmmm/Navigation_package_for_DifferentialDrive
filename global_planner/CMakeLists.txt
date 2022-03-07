@@ -136,8 +136,11 @@ include_directories(
 add_executable(global_planner_node 
 src/global_planner_node.cpp
 src/global_planner_tool.cpp
-include/A_star_module/astar.cpp
-include/A_star_module/astar.h
+# include/planner_module/planner.h
+include/planner_module/A_star_module/astar.cpp
+include/planner_module/A_star_module/astar.h
+include/planner_module/Dijkstra_module/dijkstra.cpp
+include/planner_module/Dijkstra_module/dijkstra.h
 )
 
 ## Rename C++ executable without prefix
